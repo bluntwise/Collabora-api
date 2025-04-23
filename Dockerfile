@@ -12,4 +12,4 @@ ENV NODE_ENV=development
 
 EXPOSE 8080
 
-CMD ["nodemon", "src/app.js"]
+CMD ["nodemon", "app.js"]
