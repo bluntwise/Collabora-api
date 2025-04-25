@@ -2,6 +2,7 @@
   "type": "module",
   "main": "app.js",
   "scripts": {
+    "start" : "node --watch app.js",
     "dev": "nodemon app.js"
   },
   "dependencies": {
