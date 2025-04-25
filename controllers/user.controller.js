@@ -24,10 +24,8 @@ export const getUserById = async (req, res) => {
 
 export const createUser = async (req, res) => {
     try {
-        console.log("here");
         const user = await new User(req.body);
         const result = await user.save();
-        console.log("second");
         res.send(result);
     } catch (err) {
         console.log(err);
