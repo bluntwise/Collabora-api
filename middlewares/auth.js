@@ -11,6 +11,7 @@ export async function auth(req, res) {
     const knowKey = process.env.APIKEY;
 
 
+
     if (!apiKey || apiKey !== knowKey) {
         return res.status(401).send('Not authorized');
     }

@@ -1,6 +1,9 @@
 import User from "../models/user.model.js";
+import logger from "../helpers/logger.js";
+
 
 export const getAllUsers = async (req, res) => {
+    console.log("Get ALL USERS");
     try {
         const users = await User.find(); // Suppression des paramètres inutiles
         res.send(users);
@@ -24,7 +27,10 @@ export const getUserById = async (req, res) => {
 
 export const createUser = async (req, res) => {
     try {
+        logger.info("Creating new user");
         const user = await new User(req.body);
+
+        console.log(user)
         const result = await user.save();
         res.send(result);
     } catch (err) {
