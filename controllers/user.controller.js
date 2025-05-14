@@ -3,7 +3,7 @@ import logger from "../helpers/logger.js";
 
 
 export const getAllUsers = async (req, res) => {
-    console.log("Get ALL USERS");
+    logger.info("Get ALL USERS");
     try {
         const users = await User.find(); // Suppression des paramètres inutiles
         res.send(users);
@@ -27,13 +27,14 @@ export const getUserById = async (req, res) => {
 
 export const createUser = async (req, res) => {
     try {
-        logger.info("Creating new user");
         const user = await new User(req.body);
+        logger.info("Post NEW USER")
+        logger.info(JSON.stringify(user));
 
-        console.log(user)
         const result = await user.save();
         res.send(result);
     } catch (err) {
+        logger.error(err);
         console.log(err);
         res.status(400).send({ error: err});
     }

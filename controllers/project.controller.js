@@ -1,5 +1,7 @@
 import User from "../models/user.model.js";
 import Project from "../models/project.model.js";
+import {loggers} from "winston";
+import logger from "../helpers/logger.js";
 
 export const createProject  = async (req, res) => {
     try{
@@ -31,6 +33,7 @@ export const getAllProjects = async (req, res) => {
             "projectManager",
             "firstName lastName email"
         );
+        logger.info("Get ALL PROJECTS")
         res.send(project)
     }catch (error){
         res.status(400).send({ message: error.message });
