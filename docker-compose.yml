@@ -8,6 +8,7 @@ services:
     container_name: Collabora-api
     volumes:
       - .:/usr/src/app
+      - /usr/src/app/node_modules  # <--- empêche l'écrasement par node_modules local
     ports:
       - "8080:8080"
     depends_on:
