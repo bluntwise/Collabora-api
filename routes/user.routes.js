@@ -6,6 +6,5 @@ async function routes(fastify, options) {
     fastify.post('/', {preHandler : auth}, userController.createUser);
     fastify.put('/:id', userController.updateUser);
     fastify.delete('/:id', userController.deleteUser);
-    fastify.get('/test', userController.testUser)
 }
 export default routes;

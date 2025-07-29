@@ -7,7 +7,7 @@ export const createProject  = async (req, res) => {
     try{
         const projectManager = await User.findById(req.body.projectManager);
 
-        if (!projectManager || !["Admin", "Project Manager"].includes(projectManager.role)) {
+        if (!projectManager || !["Administrator", "Project Manager"].includes(projectManager.role)) {
             return res.status(400).send({error: "Invalid Project Manager"});
         }
 
@@ -21,8 +21,12 @@ export const createProject  = async (req, res) => {
         const project = new Project(req.body);
         await project.save();
         res.send(project);
+
+        logger.info("POST New Project Successfully");
+        logger.info(JSON.stringify(project));
     }catch (error){
         res.status(400).send({ message: error.message });
+        logger.error(JSON.stringify(error));
     }
 }
 
@@ -33,10 +37,11 @@ export const getAllProjects = async (req, res) => {
             "projectManager",
             "firstName lastName email"
         );
-        logger.info("Get ALL PROJECTS")
+        logger.info("GET All PROJECTS")
         res.send(project)
     }catch (error){
         res.status(400).send({ message: error.message });
+        logger.error(JSON.stringify(error));
     }
 }
 
@@ -88,15 +93,16 @@ export const updateProject = async (req, res) => {
     }
 }
 
-export const deleteProject = async(req, res) => {
+export const deleteProject = async (request, reply) => {
     try {
-        const project = await Project.findByIdAndDelete(req.params.id);
-        if (!project) {
-            res.status(404).send({error: "Project not found"});
-        }
-        res.status(204).send({ message : "Project Deleted" });
+        const project = await Project.findOneAndDelete({ projectId: request.params.id });
 
-    }catch (error){
-        res.status(400).send({ message: error.message });
+        if (!project) {
+            return reply.code(404).send({ error: "Project not found" });
+        }
+
+        return reply.code(200).send({ message: "Project deleted", project });
+    } catch (error) {
+        return reply.code(400).send({ message: error.message });
     }
-}
+};

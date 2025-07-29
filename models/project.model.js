@@ -26,10 +26,10 @@ const projectSchema = new mongoose.Schema({
         validate : {
             validator : async function (v){
                 const user  = await User.findById(v);
-                return user && ["Admin", "Project Manager"].includes(user.role);
+                return user && ["Administrator", "Project Manager"].includes(user.role);
             },
             message : (props) =>
-                `User role must be 'Admin' or 'Project Manager'`
+                `User role must be 'Administrator' or 'Project Manager'`
         }
     },
     teamMembers : [{

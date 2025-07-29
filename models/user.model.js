@@ -27,16 +27,20 @@ const UserSchema = new mongoose.Schema({
         required: true
     }
 })
+UserSchema.virtual('id').get(function() {
+    return this._id.toHexString();
+});
 
-// UserSchema.pre("save", async function (next) {
-//     try{
-//         if (this.isModified('password') || this.isNew) {
-//             const salt = await bcrypt.genSalt(10);
-//         }
-//     }catch(error){
-//         return next(error);
-//     }
-// })
+
+UserSchema.set('toJSON', {
+    virtuals: true,    // Inclut `id`
+    versionKey: false, // Supprime `__v`
+    transform: (doc, ret) => {
+        delete ret._id;     // Supprime `_id`, ne garde que `id`
+        delete ret.password; // Optionnel : ne pas exposer le mot de passe
+    }
+});
+UserSchema.set('toObject', { virtuals: true });
 
 const User = mongoose.model('User', UserSchema);
 
