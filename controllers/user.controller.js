@@ -1,5 +1,6 @@
 import User from "../models/user.model.js";
 import logger from "../helpers/logger.js";
+import Project from "../models/project.model.js";
 
 
 export const getAllUsers = async (req, res) => {
@@ -63,17 +64,17 @@ export const updateUser = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
     try {
-
         const userId = req.params.id;
-        const projectUsingUser = Project.findOne({
+        const projectUsingUser = await Project.findOne({
             $or: [
                 { projectManager : userId},
                 { teamMembers : userId}
             ]
         })
+        console.log(projectUsingUser)
 
         if (projectUsingUser) {
-            return res.status(400).json({
+            return res.status(400).send({
                 message : "User is in a project."
             })
         }
@@ -81,15 +82,15 @@ export const deleteUser = async (req, res) => {
 
         const user = await User.findByIdAndDelete(req.params.id);
         if (!user){
-            return res.status(404).json({
+            return res.status(404).send({
                 message : "User not exists."
             })
         }
-        res.status(204).send({ message : "User deleted."});
+        res.status(200).send({ message : "User deleted." + userId});
         logger.info("DELETE User")
         logger.info(JSON.stringify(user));
     } catch (err) {
         res.status(500).send({ error: err.message });
-        logger.error(JSON.stringify(err));
+        logger.error(err);
     }
 };
