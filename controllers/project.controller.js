@@ -5,6 +5,7 @@ import logger from "../helpers/logger.js";
 
 export const createProject  = async (req, res) => {
     try{
+        logger.info("TEST Project")
         const projectManager = await User.findById(req.body.projectManager);
 
         if (!projectManager || !["Administrator", "Project Manager"].includes(projectManager.role)) {
@@ -66,7 +67,7 @@ export const updateProject = async (req, res) => {
 
         if (updates.projectManager) {
             const projectManager = await User.findById(updates.projectManager);
-            if (!projectManager || !["Admin", "Project Manager"].includes(projectManager.role)){
+            if (!projectManager || !["Administrator", "Project Manager"].includes(projectManager.role)){
                 return res.status(404).send({error: "Project not found"});
             }
         }

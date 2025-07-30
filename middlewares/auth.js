@@ -8,10 +8,10 @@ export async function auth(req, res) {
         return;
     }
     const apiKey = req.headers['x-api-key'];
-    const knowKey = process.env.VITE_API_KEY;
+    const knowKey = process.env.APIKEY;
 
 
-
+    console.log(`${apiKey} - ${knowKey}`);
     if (!apiKey || apiKey !== knowKey) {
 
         return res.status(401).send('Not authorized');

@@ -63,11 +63,29 @@ export const updateUser = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
     try {
-        const user = await User.findByIdAndDelete(req.params.id);
-        if (!user) {
-            return res.status(404).json({ message: "Utilisateur non trouvé" });
+
+        const userId = req.params.id;
+        const projectUsingUser = Project.findOne({
+            $or: [
+                { projectManager : userId},
+                { teamMembers : userId}
+            ]
+        })
+
+        if (projectUsingUser) {
+            return res.status(400).json({
+                message : "User is in a project."
+            })
         }
-        res.status(204).send({ message : "Utilisateur supprimé"});
+
+
+        const user = await User.findByIdAndDelete(req.params.id);
+        if (!user){
+            return res.status(404).json({
+                message : "User not exists."
+            })
+        }
+        res.status(204).send({ message : "User deleted."});
         logger.info("DELETE User")
         logger.info(JSON.stringify(user));
     } catch (err) {
