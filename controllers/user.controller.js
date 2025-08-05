@@ -2,6 +2,10 @@ import User from "../models/user.model.js";
 import logger from "../helpers/logger.js";
 import Project from "../models/project.model.js";
 
+export async function getCurrentUser(request) {
+    const userId = request.user.id; // <- c'est bien "id" car on l'a mis comme ça dans le JWT
+    return await User.findById(userId).select('-password');
+}
 
 export const getAllUsers = async (req, res) => {
     try {

@@ -81,7 +81,6 @@ export const updateProject = async (req, res) => {
             }
         }
 
-
         const updatedProject = await Project.findByIdAndUpdate(projectId, updates, {new : true});
 
         if (!updatedProject){
@@ -107,3 +106,24 @@ export const deleteProject = async (request, reply) => {
         return reply.code(400).send({ message: error.message });
     }
 };
+
+export const getMyProjects = async (request, reply) => {
+    try{
+
+        console.log(request.user)
+        const userId = request.user.id;
+        console.log(userId)
+        const projects = await Project.find({
+            $or: [
+                { projectManager: userId },
+                { teamMembers: userId }
+            ]
+        });
+
+        return reply.send({ projects });
+    }catch(error){
+        console.log(error);
+        return reply.code(400).send({ message: error.message });
+    }
+
+}

@@ -1,10 +1,12 @@
-import mongoose from 'mongoose';
-import bcrypt from 'bcrypt';
+    import mongoose from 'mongoose';
+    import bcrypt from 'bcrypt';
+
 const UserSchema = new mongoose.Schema({
     firstName: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
+        unique : true
     },
     lastName: {
         type: String,
@@ -15,35 +17,30 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-        unique: true
     },
     role: {
         type: String,
         enum: ['Administrator', 'Project Manager', 'Team Member'],
-        default: 'Team Member',
+        default: 'Team Member'
     },
-    password : {
+    password: {
         type: String,
         required: true
     }
-})
-UserSchema.virtual('id').get(function() {
-    return this._id.toHexString();
 });
 
+// Hachage du mot de passe avant sauvegarde
+UserSchema.pre('save', async function (next) {
+    if (!this.isModified('password')) return next();
 
-UserSchema.set('toJSON', {
-    virtuals: true,    // Inclut `id`
-    versionKey: false, // Supprime `__v`
-    transform: (doc, ret) => {
-        delete ret._id;     // Supprime `_id`, ne garde que `id`
-        delete ret.password; // Optionnel : ne pas exposer le mot de passe
+    try {
+        const salt = await bcrypt.genSalt(10);
+        this.password = await bcrypt.hash(this.password, salt);
+        next();
+    } catch (err) {
+        next(err);
     }
 });
-UserSchema.set('toObject', { virtuals: true });
 
 const User = mongoose.model('User', UserSchema);
-
 export default User;
-
-
