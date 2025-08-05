@@ -34,12 +34,17 @@ export const createProject  = async (req, res) => {
 
 export const getAllProjects = async (req, res) => {
     try{
-        const project = await Project.find().populate(
+        const projects = await Project.find()
+            .populate(
             "projectManager",
             "firstName lastName email"
-        );
+            )
+            .populate(
+            'teamMembers',
+            'firstName lastName email role' // idem ici
+            );
         logger.info("GET All PROJECTS")
-        res.send(project)
+        res.send(projects)
     }catch (error){
         res.status(400).send({ message: error.message });
         logger.error(JSON.stringify(error));
@@ -118,7 +123,15 @@ export const getMyProjects = async (request, reply) => {
                 { projectManager: userId },
                 { teamMembers: userId }
             ]
-        });
+        })
+            .populate(
+                "projectManager",
+                "firstName lastName email"
+            )
+            .populate(
+                'teamMembers',
+                'firstName lastName email role' // idem ici
+            );
 
         return reply.send({ projects });
     }catch(error){
