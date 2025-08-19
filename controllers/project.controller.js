@@ -44,7 +44,7 @@ export const getAllProjects = async (req, res) => {
             'firstName lastName email role' // idem ici
             );
         logger.info("GET All PROJECTS")
-        res.send(projects)
+        res.send({projects})
     }catch (error){
         res.status(400).send({ message: error.message });
         logger.error(JSON.stringify(error));
